@@ -1,0 +1,45 @@
+"R": {
+  "Version": "4.5.0",
+  "Repositories": [
+    {
+      "Name": "CRAN",
+      "URL": "https://cloud.r-project.org"
+    }
+  ]
+}
+
+"Packages": {
+    "ggplot2": {
+      "Package": "ggplot2",
+      "Version": "3.4.4",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "lubridate": {
+      "Package": "lubridate",
+      "Version": "1.9.3",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "ProjectTemplate": {
+      "Package": "ProjectTemplate",
+      "Version": "0.9.2",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "tidyverse": {
+      "Package": "tidyverse",
+      "Version": "2.0.0",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    }
+  },
+  "Metadata": {
+    "renv": {
+      "Version": "1.0.3"
+    },
+    "Lockfile": {
+      "Version": 1
+    }
+  }
+}
