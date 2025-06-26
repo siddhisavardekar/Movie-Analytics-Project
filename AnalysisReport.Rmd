@@ -1,0 +1,165 @@
+---
+title: "MOVIE ANALYTICS USING CRISP-DM: AN EXPLORATORY STUDY OF TMDB DATASET"
+output:
+  html_document: default
+  pdf_document: default
+date: "2025-06-26"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Introduction 
+
+In the entertainment sphere, the global film industry is one of the most thriving and most economically relevant fields, with the revenue of more than $100 billion each year acquired in the theatrical distribution, digital sales, and streaming services. With an increasing number of new streaming services, back catalogs, and production houses entering the market, as well as ever-growing production budgets, decision-makers throughout the film value chain, including production houses and investors, streaming services and distributors are considering how data analytics can inform their decision-making. The ability to determine such factors that make a movie profitable or popular has become a crucial part of the intricate relationship between creating and marketing content and its consumer.
+
+In this report, the Cross Industry Standard Process for Data Mining (CRISP-DM) is used to explore a wide-ranging dataset of movies obtained by The Movie Database (TMDb). The data set includes specifications of 10 760 movies that were released in the period between 1961 and 2015. It introduces a substantial basis of the analysis whose variables comprise financial performance, cast and crew details, the release time, genre, and the audience rating. To make the exploration focused and meaningful, the present study employs two full cycles of the CRISP-DM model, which are based on answering two distinct business questions. The first analytical cycle explores variables that influence profitability of films and second cycle examines variables that influence popularity and audience rating.
+
+The CRISP-DM cycles applied in the present report include business understanding, data preparation, exploratory data analysis (EDA), modeling and evaluation. R is used to manipulate, visualize and script data to encourage transparency, reproducibility and efficiency. The preprocessing steps can be classified as major or minor based on the requirements of filling missing values, data type conversions, feature extraction, and production of a clean dataset that would be utilized in additional analytics. The finished preprocessed data is saved in structure form to reuse during the modeling and incorporation of dashboards.
+
+Through the process of structured data mining practices applied to a real-world dataset in the entertainment industry, this report demonstrates the essentiality of analytics in determining trends and driving strategic decision-making. The results of the two cycles of CRISP-DM offer practical implications to the stakeholders in the industry in the form of recommendations in the areas of the genre focus, cast strategy, budgeting, as well as audience targeting. Altogether, the exploration supports the importance of insights-based on data in improving both commercial success and viewer satisfaction in the contemporary film environment.
+
+# 2. CRISP-DM Cycle 1: Profitability Analysis 
+
+## 2.1 Business Understanding 
+
+One of the goals in the movie industry is profit. The film producers, investors, and studios are stakeholders who want to understand what influences an increase in profits. Knowledge of which genres are more profitable or which directors are involved into successful movies can influence the future production and financing policies. The CRISP-DM cycle will seek to investigate these profitability determinants with historical data (Fitrianti, Voutama and Umaidah, 2023). This stage can help make decisions and develop strategic plans by using the results of previous financial performance in different movies that are highly risky with unstable returns in the movie industry.
+
+## 2.2 Data Understanding 
+The dataset utilized is the TMDB in which a variety of variables including the title of films, release dates, budgets, revenues, cast, directors, genres, popularity, rating, and the number of votes is available. The corpus consists of 4,800 movies, mostly between 1961 and 2015. The preliminary investigation demonstrated that there were irregularities in the budget and revenue entries with zeroes and blank cells. The column genres has the category encoded as string and the column release_date is in string format but needs the parsing of date (Singgalen, 2024). Also, the data on popularity and rating seemed to exhibit skewed distributions and there were a few outliers in terms of budget and revenue. An assessment of nominal fields such as popularity_level and genres revealed that their structure should be changed to obtain valuable values. This knowledge informed the strategy of data cleaning and transformation.
+
+```{r chart1, echo=FALSE, out.width='80%', fig.align='center', fig.cap='Figure 1: Overview of TMDB Dataset Structure'}
+knitr::include_graphics("Dataset_Overview.png")
+```
+ 
+## 2.3 Data Preparation 
+To make the downstream analysis reliable, the stage of data preparation was essential. The initial raw dataset was thrown in as TMDB Movies Dataset-3.csv and read in with the help of the readr package. The names of columns were made consistent to prevent syntax errors in the future operations by using make.names() function. Important libraries, including dplyr, lubridate, stringr, stringi, and purrr were loaded to aid in different cleaning and transformation functions.
+
+The release_date column which was initially saved as a string has been converted into a valid Date object by using the mdy() function of the lubridate package. This allowed it to filter accurately and operate according to time (Wiratama and Oetama, 2023). Enhancement of financial variables was done by generating a derived profit column which was the difference between revenue and budget.
+
+Thegenres column which was in the form of a pipe-delimited string was separated with the help of str_split(). The initial genre in both lists was removed to determine a simplified main_genre used in categorical analysis. The popularity level variable was handled as an ordered factor, which allows making sense of the ordinal comparisons.
+
+```{r chart2, echo=FALSE, out.width='80%', fig.align='center', fig.cap='Figure 2: Data Preprocessing'}
+knitr::include_graphics("Data_Preprocessing.png")
+```
+ 
+In order to maintain the data quality, the rows containing missing or zero values in the budget, revenue, runtime, or release_date were removed. This was useful in eliminating noise and it avoided misleading results. Columns that were not needed were dropped, and the resulting clean dataset had identifiers, metadata, financials, genre, popularity measures, and ratings.
+The cleaned data was stored as clean_tmdb.csv. Such a organized and cleaned dataset formed a basis of solid exploratory data analysis and further modeling activities.
+
+## 2.4 Modelling 
+The modeling phase was devoted to aggregation and summarization of data without using advanced statistical models. Genre-wise profit was summed up to extract well-performing genres. In the same way, the average profit was divided by the number of directors and only the ones that had over three films were kept to ensure strong comparison (Singgalen, 2024). The time factor was considered by grouping of the release years into decades. The tendencies of genres with time were embodied by a number of films by genre by decade.
+This step consisted of aggregating, combining and filtering the data with the help of dplyr verbs group_by, summarise and filter. The methodology was focused on interpretability and simplicity, which is appropriate to stakeholders who are not advanced in statistics. The results were visualized with ggplot2 and made it possible to identify patterns with bar plots and scatter plots. This step formed the basis of valuable evaluation.
+
+## 2.5 Evaluation 
+The profitability-oriented analysis evaluation yielded some sensible results that are directly related to the business goal of maximizing its financial returns. A bar chart showing average profit per genre showed that action and adventure film genres had the highest average profitability across the board. Fantasy and science fiction were close behind these genres, and both were characterized by huge production values and huge international followings (Veronica et al., 2024). On the other hand, other genres like documentaries and dramas made relatively less average profits implying that they have little commercial potential or small fan bases. This finding suggests that the genres that are based on visual spectacle, and which have a wide entertainment value, are better in terms of financial returns.
+
+```{r chart3, echo=FALSE, out.width='80%', fig.align='center', fig.cap='Figure 3: Average Profit by Genre'}
+knitr::include_graphics("EDA1.png")
+```
+ 
+It was further analysed to show the most profitable directors. A horizontal Bar chart was used to highlight the top ten directors with regard to average profit throughout their movies. Such giants like James Cameron and Christopher Nolan were remarkable in terms of their profitability rates. In order to increase the reliability directors were only included when they had over three films in the dataset, this way the statistics would be robust and skewed interpretations due to single film cases were eliminated. This observation offers vital direction to studios and producers seeking to invest in creative leadership that delivers profitable success at the end of the day.
+
+```{r chart4, echo=FALSE, out.width='80%', fig.align='center', fig.cap='Figure 4: Top 10 Directors by Average Profit'}
+knitr::include_graphics("EDA2.png")
+```
+ 
+Along with that, the scatter plot displaying the dependence between budget and revenue depicted a positively linear relationship in general. Predictably enough, bigger budgets tended to be associated with bigger revenues, yet several mid-budgeted films gave quite impressive returns as well. The exceptions highlight the significance of strategic budgetary allocation as opposed to the increase in spending on production.
+
+```{r chart5, echo=FALSE, out.width='80%', fig.align='center', fig.cap='Figure 5: Budget vs Revenue'}
+knitr::include_graphics("EDA3.png")
+```
+ 
+Taken together, these results provide insight into such essential decision-making as the choice of genre, collaboration with directors, and budget allocation to provide practical intelligence to interested stakeholders willing to maximize returns on investments in the competitive environment of the film industry.
+
+## 2.6 Deployment
+
+The final cleaned and transformed data was stored as clean_tmdb.csv to be used in further analytics projects or dashboards. Deployment-wise, what are some strategies that stakeholders can act on?
+First, the production teams need to look at investing in action and adventure genre which is a surefooted avenue when it comes to reaping greater profits. The marketing can be coordinated to get the maximum in such genres. Second, the studios can focus on collaborating with the directors with a history of successful movies (Mbunge, Fashoto and Bimha, 2022). Development aid at the early stage and budget approvals could be used to cement these partnerships.
+
+Third, the budgeting strategies may be re-assessed with the help of the knowledge about the budget-revenue scatterplot. Although an increase in the budget tends to be associated with the increase in revenues, the data also indicates that the movies with managed budgets could also be successful. This promotes the balanced portfolio-type strategy, i.e. investing in the high-budgeted blockbusters and the low-to-mid-budget films with good stories.
+
+Moreover, the resulting dataset may be loaded into a business intelligence tool, like Power BI or Tableau to monitor the current trends or develop a recommendation engine. The model also has the ability to fit additional machine learning uses, like profit prediction models. In this way, the CRISP-DM cycle ends up with practical knowledge and instruments to implement into business.
+
+# 3. CRISP-DM Cycle 2: Popularity & Ratings Analysis
+
+## 3.1 Business Understanding 
+
+Profitability is one thing but knowing the audience preference and popular view is another thing. The information on the determinants of a popular or highly-rated film is useful to streaming services, marketers, and producers. These indicators affect investing, promoting, and allocation courses of action (Leem et al., 2023). The goal of this CRISP-DM cycle is to determine the correlation between the popularity of movies and their rating, discover the trends in popularity ratings, and see how preferences towards genres changed over the years. By paying attention to these softer measures of success, the stakeholders are able to adjust the production to the mood of the audience as well as predict the demand in the future.
+
+## 3.2 Data Understanding & Preparation 
+
+This cycle used popularity, vote_average, vote_count, and main_genre fields. Preparation of data involved converting popularity and vote_average to numeric and making sure that all the rows contained valid data. The popularity_level column was handled as ordered factor to enable the categorical analysis.
+The quantiles of movies were divided into three groups: Low, Medium, and High popularity. The allocation of the distribution among these categories assisted in comprehending the reception of the majority of films (Sarioguz and Miser, 2024). Moreover, the genre and time-based features such as release_year were employed to evaluate the alterations in genre preferences by decades. These actions made the data ready to be visualized and explored.
+
+## 3.3 Modelling 
+
+Basic regression visualization and distribution analysis were applied instead of machine learning models. To check whether there is possible correlation between these two variables, a scatter plot of popularity vs. vote_average was generated. The distribution by genre was also examined, as films were divided into decades and genres, which helps to see changing preferences of the audience (Behrens et al., 2021). Bar charts were used to determine proportions about the popularity levels. The given modeling approach is quite basic; yet, it provides stakeholders with insights that can be easily interpreted. It embodies associations of variables that are key to engagement by the audience.
+
+## 3.4 Evaluation 
+
+The assessment stage revealed the most important insights about the criteria that determine the popularity of films and viewer ratings. The scatter plot analysis on popularity and vote_average showed that they are moderately positively correlated. Though it was true that as the rating increased, the movie was more likely to be popular, there were many outliers which suggested that critical success does not necessarily translate into popularity with the masses. Such inconsistency indicates that other factors, including the star power, marketing efficiency, the time of release, and accessibility to the audience, also play a key role in making a movie popular.
+
+```{r chart6, echo=FALSE, out.width='80%', fig.align='center', fig.cap='Figure 6: Popularity vs Rating'}
+knitr::include_graphics("EDA4.png")
+```
+ 
+The stacked bar chart demonstrated the genre breakdown by decade revealed a significant change in audience taste. The previous decades were marked with predominance of dramas and comedies, which showed more traditional story-telling. Nevertheless, the significant increase of the popularity of action, science fiction, and adventure genre was noticed since 1990s. The latter trends are presumably in line with technological advances in movie production, the advent of the blockbuster culture, and shifts in the audience demographics (Wibowo, Rubiana and Hartono, 2022). These insights will be of great help to the production houses and streaming platforms regarding content scheduling and genre-wise marketing.
+
+```{r chart7, echo=FALSE, out.width='80%', fig.align='center', fig.cap='Figure 7: Genre Popularity Over Decades'}
+knitr::include_graphics("EDA5.png")
+```
+ 
+Moreover, the popularity_level variable analysis resulted in the majority of the films being in the "Medium" popularity category and only a smaller number of films were in the "High" popularity category. This disparity lies behind the competitive aspect of the movie business where only a few films can penetrate the saturation in the market. It implies that it should have strong promotion strategies backed by predictive analytics to increase exposure and success.
+
+```{r chart8, echo=FALSE, out.width='80%', fig.align='center', fig.cap='Figure 8: Distribution of Popularity Levels in Movies'}
+knitr::include_graphics("EDA6.png")
+```
+
+In general, the assessment process proved the multi-dimensionality of popularity that is determined not only by qualitative characteristics but also by external promoting forces.
+ 
+## 3.5 Deployment 
+
+Findings of this cycle can be directly impacting content strategy and platform curation. Movies with high performing genres need to be marketed first and mostably at the times of the year when many movies are released. The genre-time analysis can be applied by streaming platforms to suggest films based on a nostalgic theme or a trending theme.
+
+The existence of the positive relation between the vote average and the popularity moots the significance of quality content. Production teams are obliged to consideration of narrative power and casting attraction. With regards to the films that have strong ratings, yet are not popular, it is possible to make a retargeting using data-driven marketing.
+
+The division of popularity into levels will enable the stakeholders to evaluate performance with reference to objective criteria. As an example, it is possible to determine characteristics common in the popular movies that are considered as successful and duplicate the patterns of success. The resulting cleaned and structured data provides an easy of further analysis by clustering and/or classification or even integration into a dashboard.
+
+On the whole, this CRISP-DM cycle facilitates practical deployment, as it helps to connect the audience feeling with the quantifiable characteristics. It believes in optimization of content strategy, investments in quality production and segregation of audience to wiser promotions.
+
+# 4. Reflection & Conclusion 
+
+The project was able to explain how the CRISP-DM framework can be applied in practice to help extract meaningful business insights into a movie dataset with the help of the R programming language. The investigation touched upon two of the most paramount measures in the film industry by performing two full analytical cycles: one dealing with profitability and the other one with popularity. Through the cycles, the findings were interpretable and actionable by various stakeholders such as the producers, marketers, and investors as each cycle systematically went through the CRISP-DM phases.
+
+There were some challenges that were encountered in the entire process. Among the important challenges was handling of missing, inconsistent or non-standardized data, especially among the financial variables of budget and revenue. Further, the genre information which was in the form of a pipe delimited string had to be parsed and transformed carefully. Multi-genre movies have had to be simplified via use of only the predominant genre which although needed to make aggregations easy, restricted the fineness of genre based insights. Irrespective of these limitations, the data preparation stage was successful in converting the raw data into high quality and analysis-ready form.
+
+This project has strengths associated with a transparent approach, reproducibility, and effective visualization of results. The ggplot2 package enabled the creation of interesting and educative plots that conveyed the trend successfully. The resulting cleaned dataset not only allowed this analysis but can be further modeled or deployed to dashboards. There were however certain limitations. No inflation adjustment was made in the analysis, and no more complicated model, like clustering, time-series forecasting, or machine learning, was considered, but these are possibilities to consider in the future.
+
+Possible future improvements may be the modeling of the audience sentiment based on the reviews, the contribution analysis by actor level, or the profit estimates in inflation-adjusted values. Additional insight and greater practical value might be achieved by incorporation of more advanced statistical or predictive modeling.
+As a conclusion, the project reaffirmed that even the most basic data mining algorithms, when systematically applied using a framework such as CRISP-DM, can reveal useful patterns in the data of the film industry. This reaffirms the effectiveness of effective exploratory data analysis in driving data-informed decisioning in the different fields in the entertainment industry.
+ 
+# 5. References
+
+Behrens, R., Foutz, N.Z., Franklin, M., Funk, J., Gutierrez-Navratil, F., Hofmann, J. and Leibfried, U., 2021. Leveraging analytics to produce compelling and profitable film content. Journal of Cultural Economics, 45, pp.171-211.
+
+Fitrianti, I., Voutama, A. and Umaidah, Y., 2023. Clustering Film Populer pada Aplikasi Netflix dengan Menggunakan Algoritma K-Means dan Metode CRISP-DM. Jurnal Teknologi Sistem Informasi, 4(2), pp.301-311.
+
+Leem, S., Oh, J., So, D. and Moon, J., 2023. Towards data-driven decision-making in the Korean film industry: An XAI model for box office analysis using dimension reduction, clustering, and classification. Entropy, 25(4), p.571.
+
+Mbunge, E., Fashoto, S.G. and Bimha, H., 2022. Prediction of box-office success: A review of trends and machine learning computational models. International Journal of Business Intelligence and Data Mining, 20(2), pp.192-207.
+
+SARIOGUZ, O. and MISER, E., 2024. Data-driven decision-making: Revolutionizing management in the information era. Journal of Artificial Intelligence General science (JAIGS) ISSN: 3006-4023, 4(1), pp.179-194.
+
+Singgalen, Y.A., 2024. Implementation of CRISP-DM for social network analysis (SNA) of tourism and travel vlog content reviews. Jurnal Media Informatika Budidarma, 8(1), pp.572-583.
+
+Singgalen, Y.A., 2024. Sentiment Classification of The Capsule Hotel Guest Reviews using Cross-Industry Standard Process for Data Mining (CRISP-DM). JURNAL MEDIA INFORMATIKA BUDIDARMA, 8(1), pp.632-643.
+
+Veronica, L., Wibowo, T.B., Gunawan, A.A.S. and Setiawan, K.E., 2024, September. Regression-Based Exploration of Factors Influencing Movie Profits. In 2024 International Seminar on Application for Technology of Information and Communication (iSemantic) (pp. 49-53). IEEE.
+
+Wibowo, B.S., Rubiana, F. and Hartono, B., 2022. A data-driven investigation of successful local film profiles in the Indonesian box office. Jurnal Manajemen Indonesia, 22(3), pp.333-344.
+
+Wiratama, J. and Oetama, R.S., 2023, August. KNN And Naïve Bayes Algorithms for Improving Prediction of Indonesian Film Ratings using Feature Selection Techniques. In 2023 4th International Conference on Big Data Analytics and Practices (IBDAP) (pp. 1-6). IEEE.
+
+
+
